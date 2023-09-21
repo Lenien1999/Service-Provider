@@ -73,7 +73,15 @@ class ProfilePage extends StatelessWidget {
                 style: appstyle(titleClr, FontWeight.w700, 14, ''),
               ),
             ]),
-          )
+          ),
+          Container(
+            color: tilegClr,
+            padding: const EdgeInsets.all(17),
+            child: Text(
+              'General',
+              style: appstyle(primaryClr, FontWeight.w700, 16, ''),
+            ),
+          ),
         ],
       ),
     );
