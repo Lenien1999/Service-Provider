@@ -27,7 +27,7 @@ class ProfilePage extends StatelessWidget {
       body: ListView(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.35,
+            height: MediaQuery.of(context).size.height * 0.32,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Stack(
@@ -82,6 +82,65 @@ class ProfilePage extends StatelessWidget {
               style: appstyle(primaryClr, FontWeight.w700, 16, ''),
             ),
           ),
+          Column(
+            children: [
+              buildContainer('Change Password', Icons.lock),
+              buildContainer('App Language', Icons.language),
+              buildContainer(
+                  'Favourite Service', Icons.favorite_border_outlined),
+              buildContainer('Rate Us', Icons.star),
+            ],
+          ),
+          SizedBox(height: 15,),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Container(
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  color: primaryClr, borderRadius: BorderRadius.circular(12)),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Logout',
+                  style: appstyle(Colors.white, FontWeight.bold, 18, ''),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  buildContainer(String title, IconData icon) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                icon,
+                color: titleClr,
+                size: 20,
+              ),
+              const SizedBox(
+                width: 6,
+              ),
+              Text(
+                title,
+                style: appstyle(titleClr, FontWeight.w600, 16, ''),
+              ),
+            ],
+          ),
+          const Icon(
+            Icons.arrow_forward_ios_outlined,
+            color: titleClr,
+          )
         ],
       ),
     );
