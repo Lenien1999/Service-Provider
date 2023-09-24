@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:serviceprovder/controller/controller.dart';
 import 'package:serviceprovder/controller/mainscreencontroller.dart';
-import 'package:serviceprovder/pages/provider/provider_home.dart';
-import 'package:serviceprovder/pages/splashscreen.dart';
+import 'package:serviceprovder/pages/login_page.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromRGBO(95, 96, 185, 1)),
         useMaterial3: true,
       ),
-      home: const ProviderHome(),
+      home: const LoginPage(),
     );
   }
 }

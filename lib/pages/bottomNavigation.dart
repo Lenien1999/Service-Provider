@@ -19,7 +19,7 @@ class BuildBottomNavigation extends StatelessWidget {
     const HomePage(),
     const BookingPage(),
     const BookServicePage(),
-    const ServicePage(),
+    const BookingPage(),
     const ProfilePage(),
   ];
 

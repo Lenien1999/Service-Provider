@@ -133,6 +133,7 @@ class ProviderHome extends StatelessWidget {
             ),
             Expanded(
               child: GridView.builder(
+                  itemCount: 4,
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -141,51 +142,55 @@ class ProviderHome extends StatelessWidget {
                       mainAxisSpacing: 15),
                   itemBuilder: (context, index) {
                     return Container(
+                      height: 216,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: const Color.fromRGBO(246, 247, 249, 1),
-                            width: 1,
+                            width: 2,
                           )),
                       child: Column(children: [
-                        Image.asset('assets/images/houseman.png'),
+                        Container(
+                          height: 110,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(12),
+                                  topLeft: Radius.circular(12))),
+                          child: Image.asset('assets/images/houseman.png',
+                              height: 110, fit: BoxFit.fitHeight),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Text(
                           'Asake Ayoke',
-                          style: appstyle(titleClr, FontWeight.w700, 18, ''),
+                          style: appstyle(headingClr, FontWeight.w700, 18, ''),
                         ),
                         const Padding(
                           padding: EdgeInsets.all(10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: CircleAvatar(
-                                  backgroundColor: tilegClr,
-                                  child: Icon(
-                                    Icons.call_outlined,
-                                    color: primaryClr,
-                                  ),
+                              CircleAvatar(
+                                backgroundColor: tilegClr,
+                                child: Icon(
+                                  Icons.call_outlined,
+                                  color: primaryClr,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: CircleAvatar(
-                                  backgroundColor: tilegClr,
-                                  child: Icon(
-                                    Icons.message,
-                                    color: primaryClr,
-                                  ),
+                              CircleAvatar(
+                                backgroundColor: tilegClr,
+                                child: Icon(
+                                  Icons.message,
+                                  color: primaryClr,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: CircleAvatar(
-                                  backgroundColor: tilegClr,
-                                  child: Icon(
-                                    Icons.message,
-                                    color: primaryClr,
-                                  ),
+                              CircleAvatar(
+                                backgroundColor: tilegClr,
+                                child: Icon(
+                                  Icons.message,
+                                  color: primaryClr,
                                 ),
                               ),
                             ],

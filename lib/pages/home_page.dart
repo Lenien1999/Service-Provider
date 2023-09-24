@@ -20,15 +20,14 @@ class _HomePageState extends State<HomePage> {
     'assets/images/home1.png',
     'assets/images/home2.png',
   ];
+   String selectedCategory = 'painting';
   final PageController _controller = PageController();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      
       backgroundColor: const Color(0x00f6f7f9),
       body: SafeArea(
-
         child:
             Consumer<PageNotifier>(builder: (context, homecontroller, child) {
           return CustomScrollView(
@@ -232,7 +231,14 @@ class _HomePageState extends State<HomePage> {
                                       crossAxisCount: 3)),
                               itemBuilder: (context, index) {
                                 return GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (__) {
+                                      return ServicePage(
+                                        services: categoryList[index], selectedcategory: '',
+                                      );
+                                    }));
+                                  },
                                   child: Container(
                                     height: 70,
                                     width: size.width,
@@ -311,11 +317,11 @@ class _HomePageState extends State<HomePage> {
                                     itemBuilder: (context, index) {
                                       return GestureDetector(
                                         onTap: () {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(
-                                                  builder: (context) {
-                                            return const ServicePage();
-                                          }));
+                                          // Navigator.push(context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) {
+                                          //   return const ServicePage();
+                                          // }));
                                         },
                                         child: Container(
                                           margin: const EdgeInsets.all(20),

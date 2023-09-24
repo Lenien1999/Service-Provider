@@ -1,15 +1,32 @@
+import 'servicemodel.dart';
+
 class Category {
   String name;
   String image;
-  Category({required this.image, required this.name});
+  List<Services> service;
+  Category({required this.image, required this.name, required this.service});
 }
 
 List<Category> categoryList = [
-  Category(image: "assets/images/Icon1.png", name: 'Ac Repair'),
-  Category(image: "assets/images/Icon3.png", name: 'Salon'),
+  Category(
+      image: "assets/images/Icon1.png",
+      name: 'Hair Dressing',
+      service: serviceList),
+  Category(
+      image: "assets/images/Icon3.png", name: 'Salon', service: serviceList),
   // Category(image: "assets/images/Icon4.png", name: 'Security'),
-  Category(image: "assets/images/Icon5.png", name: 'Carpenter'),
-  Category(image: "assets/images/Icon6.png", name: 'Pest Control'),
-  Category(image: "assets/images/Icon7.png", name: 'Painting'),
-  Category(image: "assets/images/plumber1.png", name: 'Plumber'),
+  Category(
+      image: "assets/images/Icon5.png",
+      name: 'Smart Home',
+      service: serviceList),
+  Category(
+      image: "assets/images/Icon6.png",
+      name: 'Pes;t Control',
+      service: serviceList),
+  Category(
+      image: "assets/images/Icon7.png", name: 'Painting', service: serviceList),
+  Category(
+      image: "assets/images/plumber1.png",
+      name: 'Car Washing',
+      service: serviceList),
 ];

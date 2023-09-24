@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:serviceprovder/model/category_model.dart';
+import 'package:serviceprovder/model/servicemodel.dart';
+
 import 'package:serviceprovder/pages/filter_page.dart';
 import '../style/style.dart';
 import 'service_detail.dart';
 
 class ServicePage extends StatefulWidget {
-  const ServicePage({super.key});
+  final Category services;
+  final String selectedcategory;
+  const ServicePage(
+      {super.key, required this.services, required this.selectedcategory});
 
   @override
   State<ServicePage> createState() => _ServicePageState();
@@ -19,8 +25,16 @@ class _ServicePageState extends State<ServicePage> {
     'Home Painting',
     'Car Painting'
   ];
+
   @override
   Widget build(BuildContext context) {
+    final String category = widget.services.name;
+    int itemCount = categoryList
+        .where((element) =>
+            element.service.any((servic) => servic.name == category))
+        .toList()
+        .length;
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 50,
@@ -34,7 +48,7 @@ class _ServicePageState extends State<ServicePage> {
               color: Colors.white,
             )),
         title: Text(
-          'Smart Home',
+          widget.services.name,
           style: appstyle(Colors.white, FontWeight.w500, 18, ''),
         ),
       ),
@@ -80,33 +94,34 @@ class _ServicePageState extends State<ServicePage> {
             child: ListView(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              children: List.generate(
-                  serviceCategory.length,
-                  (index) => Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color.fromRGBO(246, 247, 249, 1)),
-                        margin: const EdgeInsets.all(10),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 13, vertical: 8),
-                          child: Text(
-                            serviceCategory[index],
-                            style: appstyle(
-                                const Color.fromRGBO(108, 117, 125, 1),
-                                FontWeight.w600,
-                                14,
-                                ''),
-                          ),
-                        ),
-                      )),
+              children: List.generate(serviceCategory.length, (index) {
+                return Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color.fromRGBO(246, 247, 249, 1)),
+                  margin: const EdgeInsets.all(10),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+                    child: Text(
+                      serviceCategory[index],
+                      style: appstyle(const Color.fromRGBO(108, 117, 125, 1),
+                          FontWeight.w600, 14, ''),
+                    ),
+                  ),
+                );
+              }),
             ),
           ),
           ListView.builder(
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
-              itemCount: 5,
+              itemCount: itemCount,
               itemBuilder: (context, index) {
+                final filterservice = serviceList
+                    .where((element) => element.name == category)
+                    .toList();
+                final serviceItem = filterservice[index];
                 return Container(
                   margin: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -152,11 +167,11 @@ class _ServicePageState extends State<ServicePage> {
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(23),
                                     ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(5.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
                                       child: Text(
-                                        'PAINTING',
-                                        style: TextStyle(
+                                        serviceItem.name,
+                                        style: const TextStyle(
                                             fontSize: 10,
                                             fontWeight: FontWeight.bold,
                                             color: primaryClr),
@@ -217,7 +232,7 @@ class _ServicePageState extends State<ServicePage> {
                         child: SizedBox(
                           width: 310,
                           child: Text(
-                            'Fixing Anroid Smart Devices around Interior and Wiring',
+                            serviceItem.name,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: appstyle(const Color.fromRGBO(28, 31, 52, 1),

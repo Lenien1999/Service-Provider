@@ -18,7 +18,7 @@ class _BookServicePageState extends State<BookServicePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
+      
         backgroundColor: primaryClr,
         leading: GestureDetector(
             onTap: () {
