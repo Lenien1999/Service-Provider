@@ -188,12 +188,12 @@ class _ServicePageState extends State<ServicePage> {
                                       color: primaryClr,
                                       borderRadius: BorderRadius.circular(23),
                                     ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.symmetric(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
                                           vertical: 5.0, horizontal: 10),
                                       child: Text(
-                                        '\$190',
-                                        style: TextStyle(
+                                        "\$${serviceItem.price}",
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white),
                                       ),
@@ -232,7 +232,7 @@ class _ServicePageState extends State<ServicePage> {
                         child: SizedBox(
                           width: 310,
                           child: Text(
-                            serviceItem.name,
+                            serviceItem.description,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: appstyle(const Color.fromRGBO(28, 31, 52, 1),
