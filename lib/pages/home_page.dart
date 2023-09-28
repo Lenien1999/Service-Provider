@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:serviceprovder/controller/controller.dart';
+import 'package:serviceprovder/model/servicemodel.dart';
+import 'package:serviceprovder/pages/service_detail.dart';
 import 'package:serviceprovder/style/style.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../model/category_model.dart';
 import 'category_home.dart';
+import 'provider/servicegrid.dart';
 import 'service.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     'assets/images/home1.png',
     'assets/images/home2.png',
   ];
-   String selectedCategory = 'painting';
+  String selectedCategory = 'painting';
   final PageController _controller = PageController();
   @override
   Widget build(BuildContext context) {
@@ -235,7 +238,8 @@ class _HomePageState extends State<HomePage> {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (__) {
                                       return ServicePage(
-                                        services: categoryList[index], selectedcategory: '',
+                                        services: categoryList[index],
+                                       
                                       );
                                     }));
                                   },
@@ -297,7 +301,12 @@ class _HomePageState extends State<HomePage> {
                                       Colors.black, FontWeight.w500, 18, ''),
                                 ),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                      Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return   const ServiceGrid();
+                            }));
+                                  },
                                   child: Text(
                                     "View all",
                                     style: appstyle(
@@ -312,16 +321,19 @@ class _HomePageState extends State<HomePage> {
                                 child: ListView.builder(
                                     shrinkWrap: true,
                                     physics: const BouncingScrollPhysics(),
-                                    itemCount: 5,
+                                    itemCount: serviceList.length.clamp(1, 4),
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: (context, index) {
+                                      final serviceItem = serviceList[index];
                                       return GestureDetector(
                                         onTap: () {
-                                          // Navigator.push(context,
-                                          //     MaterialPageRoute(
-                                          //         builder: (context) {
-                                          //   return const ServicePage();
-                                          // }));
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return ServiceDetails(
+
+                                                serviceItem: serviceItem);
+                                          }));
                                         },
                                         child: Container(
                                           margin: const EdgeInsets.all(20),
@@ -349,7 +361,7 @@ class _HomePageState extends State<HomePage> {
                                                 child: Stack(
                                                   children: [
                                                     Image.asset(
-                                                      'assets/images/home1.png',
+                                                      serviceItem.images,
                                                       fit: BoxFit.cover,
                                                       height: 140,
                                                     ),
@@ -369,13 +381,13 @@ class _HomePageState extends State<HomePage> {
                                                                     .circular(
                                                                         23),
                                                           ),
-                                                          child: const Padding(
+                                                          child: Padding(
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    5.0),
+                                                                const EdgeInsets
+                                                                    .all(5.0),
                                                             child: Text(
-                                                              'PAINTING',
-                                                              style: TextStyle(
+                                                              serviceItem.name,
+                                                              style: const TextStyle(
                                                                   fontSize: 10,
                                                                   fontWeight:
                                                                       FontWeight
@@ -401,16 +413,17 @@ class _HomePageState extends State<HomePage> {
                                                                     .circular(
                                                                         23),
                                                           ),
-                                                          child: const Padding(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
                                                                     vertical:
                                                                         5.0,
                                                                     horizontal:
                                                                         10),
                                                             child: Text(
-                                                              '\$190',
-                                                              style: TextStyle(
+                                                              "\$ ${serviceItem.price}",
+                                                              style: const TextStyle(
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -461,7 +474,7 @@ class _HomePageState extends State<HomePage> {
                                                 child: SizedBox(
                                                   width: 180,
                                                   child: Text(
-                                                    'Painting for beautiful home',
+                                                    serviceItem.description,
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,

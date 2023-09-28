@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:serviceprovder/controller/mainscreencontroller.dart';
+import 'package:serviceprovder/model/bookingmodel.dart';
 
+import '../model/servicemodel.dart';
 import '../style/dottedline.dart';
 import '../style/style.dart';
+import 'book_page.dart';
 
 class BookServicePage extends StatefulWidget {
-  const BookServicePage({super.key});
+  final Services serviceItem;
+  const BookServicePage({super.key, required this.serviceItem});
 
   @override
   State<BookServicePage> createState() => _BookServicePageState();
 }
 
 class _BookServicePageState extends State<BookServicePage> {
-  List<Widget> pageList = [const BuildStepOne(), const BuildStepTwo()];
   @override
   Widget build(BuildContext context) {
+    List<Widget> pageList = [
+      const BuildStepOne(),
+      BuildStepTwo(
+        serviceItem: widget.serviceItem,
+      )
+    ];
     return Scaffold(
       appBar: AppBar(
-      
         backgroundColor: primaryClr,
         leading: GestureDetector(
             onTap: () {
@@ -194,12 +202,17 @@ class BuildStepOne extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(23)),
                   child: TextFormField(
-                    decoration: const InputDecoration(
+                    decoration:   InputDecoration(
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.all(12),
-                      prefixIcon: Icon(
-                        Icons.calendar_month,
-                        color: titleClr,
+                      contentPadding: const EdgeInsets.all(12),
+                      prefixIcon: GestureDetector(
+                        onTap:(){
+                          showDateTimePicker(context:context, );
+                        },
+                        child: const Icon(
+                          Icons.calendar_month,
+                          color: titleClr,
+                        ),
                       ),
                       hintText: 'Enter Date And Time',
                     ),
@@ -262,155 +275,241 @@ class BuildStepOne extends StatelessWidget {
       ],
     );
   }
+  Future<DateTime?> showDateTimePicker({
+  required BuildContext context,
+  DateTime? initialDate,
+  DateTime? firstDate,
+  DateTime? lastDate,
+}) async {
+  initialDate ??= DateTime.now();
+  firstDate ??= initialDate.subtract(const Duration(days: 365 * 100));
+  lastDate ??= firstDate.add(const Duration(days: 365 * 200));
+
+  final DateTime? selectedDate = await showDatePicker(
+    context: context,
+    initialDate: initialDate,
+    firstDate: firstDate,
+    lastDate: lastDate,
+  );
+
+  if (selectedDate == null) return null;
+
+  if (!context.mounted) return selectedDate;
+
+  final TimeOfDay? selectedTime = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay.fromDateTime(selectedDate),
+  );
+
+  return selectedTime == null
+      ? selectedDate
+      : DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+}
 }
 
-class BuildStepTwo extends StatelessWidget {
-  const BuildStepTwo({super.key});
+class BuildStepTwo extends StatefulWidget {
+  final Services serviceItem;
+  const BuildStepTwo({super.key, required this.serviceItem});
+
+  @override
+  State<BuildStepTwo> createState() => _BuildStepTwoState();
+}
+
+class _BuildStepTwoState extends State<BuildStepTwo> {
+  double subTotal = 0.0;
+
+  updatePrice() {
+    double total = 0.0;
+    total += widget.serviceItem.price * widget.serviceItem.quantity;
+    // double price = widget.serviceItem.price * widget.serviceItem.quantity;
+    widget.serviceItem.discount = (total * 0.5);
+
+    subTotal = total;
+    widget.serviceItem.totalPrice = subTotal - widget.serviceItem.discount;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // TODO: implement initState
+
+    updatePrice();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 128,
-          padding:
-              const EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12), color: tilegClr),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
+    return Consumer<MainScreenController>(
+      builder: (BuildContext context, value, child) {
+        final controller =
+            Provider.of<MainScreenController>(context, listen: false);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 128,
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 10, left: 10, right: 10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12), color: tilegClr),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Apartment Cleaning',
-                    style: appstyle(Colors.black, FontWeight.w500, 18, ''),
+                  Column(
+                    children: [
+                      Text(
+                        widget.serviceItem.name,
+                        style: appstyle(Colors.black, FontWeight.w500, 18, ''),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white),
+                        child: Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  if (widget.serviceItem.quantity > 1) {
+                                    controller.decrement(widget.serviceItem);
+                                    setState(() {
+                                      updatePrice();
+                                    });
+                                  }
+                                },
+                                icon: const Icon(Icons.arrow_drop_down)),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              widget.serviceItem.quantity.toString(),
+                              style:
+                                  appstyle(titleClr, FontWeight.w500, 18, ''),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  controller.increment(widget.serviceItem);
+                                  setState(() {
+                                    updatePrice();
+                                  });
+                                  print(widget.serviceItem.price);
+                                },
+                                icon: const Icon(Icons.arrow_drop_up)),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white),
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.arrow_drop_down)),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          '1',
-                          style: appstyle(titleClr, FontWeight.w500, 18, ''),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.arrow_drop_up)),
-                      ],
-                    ),
+                  Image.asset(
+                    widget.serviceItem.images,
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.contain,
                   )
                 ],
               ),
-              Image.asset(
-                'assets/images/home1.png',
-                width: 150,
-                height: 150,
-                fit: BoxFit.contain,
-              )
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        Text(
-          'Price Deteil',
-          style: appstyle(headingClr, FontWeight.w500, 18, ''),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              color: const Color.fromRGBO(246, 247, 249, 1),
-              borderRadius: BorderRadius.circular(12)),
-          child: Column(
-            children: [
-              buildBookingContainer("Price", '#1200'),
-              const Divider(
-                height: 1,
-                thickness: 0.3,
-                color: Colors.grey,
-                indent: 10,
-              ),
-              buildBookingContainer("Sub Total", '#1200*2'),
-              const Divider(
-                height: 1,
-                thickness: 0.3,
-                color: Colors.grey,
-                indent: 10,
-              ),
-              buildBookingContainer("Discout", '-#50'),
-              const Divider(
-                height: 1,
-                thickness: 0.3,
-                color: Colors.grey,
-                indent: 10,
-              ),
-              buildBookingContainer("Total Amount", '#23000'),
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Container(
-              height: 50,
-              width: 150,
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      color: const Color.fromARGB(255, 224, 219, 219),
-                      width: 1),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12)),
-              child: Center(
-                  child: Text(
-                'Prevous',
-                style: appstyle(Colors.black, FontWeight.bold, 16, ''),
-              )),
             ),
             const SizedBox(
-              width: 10,
+              height: 15,
             ),
-            GestureDetector(
-              onTap: () {
-                buildAlertBox(context);
-              },
-              child: Container(
-                height: 50,
-                width: 150,
-                decoration: BoxDecoration(
-                    color: primaryClr, borderRadius: BorderRadius.circular(12)),
-                child: Center(
-                    child: Text(
-                  ' Book',
-                  style: appstyle(Colors.white, FontWeight.bold, 16, ''),
-                )),
+            Text(
+              'Price Deteil',
+              style: appstyle(headingClr, FontWeight.w500, 18, ''),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: const Color.fromRGBO(246, 247, 249, 1),
+                  borderRadius: BorderRadius.circular(12)),
+              child: Column(
+                children: [
+                  buildBookingContainer(
+                      "Price", "\$${widget.serviceItem.price}"),
+                  const Divider(
+                    height: 1,
+                    thickness: 0.3,
+                    color: Colors.grey,
+                    indent: 10,
+                  ),
+                  buildBookingContainer("Sub Total", "\$$subTotal"),
+                  const Divider(
+                    height: 1,
+                    thickness: 0.3,
+                    color: Colors.grey,
+                    indent: 10,
+                  ),
+                  buildBookingContainer(
+                      "Discout", "\$${widget.serviceItem.discount}"),
+                  const Divider(
+                    height: 1,
+                    thickness: 0.3,
+                    color: Colors.grey,
+                    indent: 10,
+                  ),
+                  buildBookingContainer(
+                      "Total Amount", "\$${widget.serviceItem.totalPrice}"),
+                ],
               ),
             ),
+            const SizedBox(
+              height: 15,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  height: 50,
+                  width: 150,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 224, 219, 219),
+                          width: 1),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Center(
+                      child: Text(
+                    'Prevous',
+                    style: appstyle(Colors.black, FontWeight.bold, 16, ''),
+                  )),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    buildAlertBox(context, widget.serviceItem);
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 150,
+                    decoration: BoxDecoration(
+                        color: primaryClr,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Center(
+                        child: Text(
+                      ' Book',
+                      style: appstyle(Colors.white, FontWeight.bold, 16, ''),
+                    )),
+                  ),
+                ),
+              ],
+            ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -433,74 +532,88 @@ class BuildStepTwo extends StatelessWidget {
     );
   }
 
-  buildAlertBox(BuildContext context) {
+  buildAlertBox(BuildContext context, Services serviceItem) {
     return showDialog(
         context: context,
         builder: (context) {
-          return Center(
-            child: SizedBox(
-              height: 400,
-              child: AlertDialog(
-                content: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/images/Check.png",
-                      height: 60,
-                      width: 60,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Confirm Booking',
-                      style: appstyle(Colors.black, FontWeight.w500, 18, ''),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Are you sure you want to confirm the booking',
-                      style: appstyle(headingClr, FontWeight.w500, 14, ''),
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              'Cancel',
-                              style: appstyle(
-                                  Colors.black, FontWeight.bold, 18, ''),
-                            ),
-                          ),
-                          Container(
-                            height: 50,
-                            width: 80,
-                            decoration: BoxDecoration(
-                                color: primaryClr,
-                                borderRadius: BorderRadius.circular(12)),
-                            child: TextButton(
-                              onPressed: () {
-                                buildConfirmBooking(context);
-                              },
-                              child: Text(
-                                'Book',
-                                style: appstyle(
-                                    Colors.white, FontWeight.bold, 18, ''),
+          return Consumer<MainScreenController>(
+            builder: (BuildContext context, value, Widget? child) {
+              return Center(
+                child: SizedBox(
+                  height: 400,
+                  child: AlertDialog(
+                    content: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/images/Check.png",
+                          height: 60,
+                          width: 60,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Confirm Booking',
+                          style:
+                              appstyle(Colors.black, FontWeight.w500, 18, ''),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Are you sure you want to confirm the booking',
+                          style: appstyle(headingClr, FontWeight.w500, 14, ''),
+                        ),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(
+                                  'Cancel',
+                                  style: appstyle(
+                                      Colors.black, FontWeight.bold, 18, ''),
+                                ),
                               ),
-                            ),
-                          ),
-                        ])
-                  ],
+                              Container(
+                                height: 50,
+                                width: 80,
+                                decoration: BoxDecoration(
+                                    color: primaryClr,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: TextButton(
+                                  onPressed: () {
+                                  
+                                    var addServicetoCart = Booking(
+                                        date: "date",
+                                        time: "time",
+                                        provider: [],
+                                        service:[serviceItem]);
+
+                                    
+                                    value.addToCart(addServicetoCart);
+                                    buildConfirmBooking(context);
+                                  },
+                                  child: Text(
+                                    'Book',
+                                    style: appstyle(
+                                        Colors.white, FontWeight.bold, 18, ''),
+                                  ),
+                                ),
+                              ),
+                            ])
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         });
   }
@@ -546,7 +659,10 @@ class BuildStepTwo extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12)),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop();
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (__) {
+                            return const BookingPage();
+                          }));
                         },
                         child: Text(
                           'Back to Home',

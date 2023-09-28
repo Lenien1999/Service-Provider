@@ -10,9 +10,9 @@ import 'service_detail.dart';
 
 class ServicePage extends StatefulWidget {
   final Category services;
-  final String selectedcategory;
+  
   const ServicePage(
-      {super.key, required this.services, required this.selectedcategory});
+      {super.key, required this.services,});
 
   @override
   State<ServicePage> createState() => _ServicePageState();
@@ -25,7 +25,18 @@ class _ServicePageState extends State<ServicePage> {
     'Home Painting',
     'Car Painting'
   ];
-
+  final controller = TextEditingController();
+    List<Services> searchServiceList = List.from(serviceList);
+  void updatSearchList(String value) {
+    setState(() {
+      searchServiceList.where((element) {
+        final search =
+            element.name.toLowerCase().contains(value.toLowerCase()) ||
+                element.description.toLowerCase().contains(value.toLowerCase());
+        return search;
+      }).toList();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final String category = widget.services.name;
@@ -61,6 +72,10 @@ class _ServicePageState extends State<ServicePage> {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: TextFormField(
+                  controller: controller,
+                  onChanged: (value) {
+                    updatSearchList(value);
+                  },
                   decoration: const InputDecoration(
                       contentPadding: EdgeInsets.all(15),
                       border: InputBorder.none,
@@ -146,13 +161,14 @@ class _ServicePageState extends State<ServicePage> {
                           onTap: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              return const ServiceDetails();
+                              return ServiceDetails(
+                                serviceItem: serviceItem);
                             }));
                           },
                           child: Stack(
                             children: [
                               Image.asset(
-                                'assets/images/paintin2.png',
+                                serviceItem.images,
                                 fit: BoxFit.fill,
                                 height: 160,
                                 width: MediaQuery.of(context).size.width,
@@ -269,4 +285,6 @@ class _ServicePageState extends State<ServicePage> {
       ),
     );
   }
+
+
 }

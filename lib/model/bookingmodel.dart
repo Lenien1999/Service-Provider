@@ -5,6 +5,7 @@ class Booking {
   List<Services> service;
   String time;
   String date;
+// String status;
   List<Providerman> provider;
   Booking(
       {required this.date,
@@ -21,8 +22,4 @@ List<Booking> booking = [
       service: serviceList)
 ];
 
-class HouseMan {
-  String name;
-  String dp;
-  HouseMan({required this.dp, required this.name});
-}
+ 

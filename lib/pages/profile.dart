@@ -91,7 +91,7 @@ class ProfilePage extends StatelessWidget {
               buildContainer('Rate Us', Icons.star),
             ],
           ),
-          SizedBox(height: 15,),
+          const SizedBox(height: 15,),
           Padding(
             padding: const EdgeInsets.all(15),
             child: Container(

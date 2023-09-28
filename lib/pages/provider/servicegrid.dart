@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:serviceprovder/model/servicemodel.dart';
 
 import '../../style/style.dart';
-import '../service.dart';
 
-class Service_Grid extends StatelessWidget {
-  const Service_Grid({super.key});
+import '../service_detail.dart';
 
+// ignore: camel_case_types
+class ServiceGrid extends StatefulWidget {
+  const ServiceGrid({super.key});
+
+  @override
+  State<ServiceGrid> createState() => _ServiceGridState();
+}
+
+class _ServiceGridState extends State<ServiceGrid> {
+  final controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +39,7 @@ class Service_Grid extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(25.0),
               child: TextFormField(
+                controller: controller,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(15),
                   border: OutlineInputBorder(
@@ -51,14 +61,15 @@ class Service_Grid extends StatelessWidget {
                     crossAxisSpacing: 10),
                 shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
-                itemCount: 10,
+                itemCount: serviceList.length,
                 itemBuilder: (context, index) {
+                  final serviceItem = serviceList[index];
                   return GestureDetector(
                     onTap: () {
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context) {
-                      //   return const ServicePage();
-                      // }));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ServiceDetails(serviceItem: serviceItem);
+                      }));
                     },
                     child: Container(
                       margin: const EdgeInsets.only(left: 15, right: 15),
@@ -83,7 +94,7 @@ class Service_Grid extends StatelessWidget {
                             child: Stack(
                               children: [
                                 Image.asset(
-                                  'assets/images/home1.png',
+                                  serviceItem.images,
                                   fit: BoxFit.cover,
                                   width: MediaQuery.of(context).size.width,
                                   height: 90,
@@ -98,11 +109,11 @@ class Service_Grid extends StatelessWidget {
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(23),
                                       ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(5.0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
                                         child: Text(
-                                          'PAINTING',
-                                          style: TextStyle(
+                                          serviceItem.name,
+                                          style: const TextStyle(
                                               fontSize: 10,
                                               fontWeight: FontWeight.bold,
                                               color: primaryClr),

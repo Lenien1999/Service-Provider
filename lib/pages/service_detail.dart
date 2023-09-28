@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:serviceprovder/pages/addbooking.dart';
 import 'package:serviceprovder/style/style.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import '../model/servicemodel.dart';
 import '../widget/login_register_btn.dart';
 
-class ServiceDetails extends StatelessWidget {
-  const ServiceDetails({super.key});
+class ServiceDetails extends StatefulWidget {
+  final Services serviceItem;
+  const ServiceDetails({super.key, required this.serviceItem});
 
+  @override
+  State<ServiceDetails> createState() => _ServiceDetailsState();
+}
+
+class _ServiceDetailsState extends State<ServiceDetails> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -29,7 +37,7 @@ class ServiceDetails extends StatelessWidget {
                           height: size.height * 0.39,
                           width: size.width,
                           child: Image.asset(
-                            'assets/images/home2.png',
+                            widget.serviceItem.images,
                             fit: BoxFit.fitHeight,
                           ),
                         ),
@@ -81,7 +89,7 @@ class ServiceDetails extends StatelessWidget {
                                       height: 10,
                                     ),
                                     Text(
-                                      "TV Wall Mount Installation",
+                                      widget.serviceItem.name,
                                       style: appstyle(Colors.black,
                                           FontWeight.w600, 22, ''),
                                     ),
@@ -92,7 +100,8 @@ class ServiceDetails extends StatelessWidget {
                                       children: [
                                         RichText(
                                           text: TextSpan(
-                                              text: ' \$120',
+                                              text:
+                                                  ' \$${widget.serviceItem.price}',
                                               style: appstyle(primaryClr,
                                                   FontWeight.bold, 22, ''),
                                               children: [
@@ -205,61 +214,42 @@ class ServiceDetails extends StatelessWidget {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Container(
-                              height: 40,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(9),
-                                  color:
-                                      const Color.fromARGB(255, 221, 224, 228)),
-                              child: Center(
-                                child: Text(
-                                  'New York',
-                                  style: appstyle(
-                                      const Color.fromARGB(255, 139, 137, 137),
-                                      FontWeight.w600,
-                                      16,
-                                      ''),
+                          children: List.generate(
+                              widget.serviceItem.location.length, (index) {
+                            final selected =
+                                index == widget.serviceItem.isSelectedLocation;
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  widget.serviceItem.isSelectedLocation = index;
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9),
+                                    color: selected
+                                        ? primaryClr
+                                        : const Color.fromARGB(
+                                            255, 221, 224, 228)),
+                                child: Center(
+                                  child: Text(
+                                    widget.serviceItem.location[index],
+                                    style: appstyle(
+                                        selected
+                                            ? Colors.white
+                                            : const Color.fromARGB(
+                                                255, 139, 137, 137),
+                                        FontWeight.w600,
+                                        16,
+                                        ''),
+                                  ),
                                 ),
                               ),
-                            ),
-                            Container(
-                              height: 40,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(9),
-                                  color: primaryClr),
-                              child: Center(
-                                child: Text(
-                                  'California',
-                                  style: appstyle(
-                                      Colors.white, FontWeight.w600, 16, ''),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: 40,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(9),
-                                  color:
-                                      const Color.fromARGB(255, 221, 224, 228)),
-                              child: Center(
-                                child: Text(
-                                  'New Mexico',
-                                  style: appstyle(
-                                      const Color.fromARGB(255, 139, 137, 137),
-                                      FontWeight.w600,
-                                      16,
-                                      ''),
-                                ),
-                              ),
-                            ),
-                          ],
+                            );
+                          }),
                         ),
                         const SizedBox(
                           height: 15,
@@ -524,11 +514,11 @@ class ServiceDetails extends StatelessWidget {
           )
         ],
       ),
-      floatingActionButton: buildFloatingButton(),
+      floatingActionButton: buildFloatingButton(context, widget.serviceItem),
     );
   }
 
-  Widget buildFloatingButton() {
+  Widget buildFloatingButton(BuildContext context, Services serviceItem) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -548,7 +538,11 @@ class ServiceDetails extends StatelessWidget {
           padding: const EdgeInsets.only(left: 30.0),
           child: LoinRegisterButton(
             tap: () {
-              // Add your action here
+              Navigator.push(context, MaterialPageRoute(builder: (__) {
+                return BookServicePage(
+                  serviceItem: serviceItem,
+                );
+              }));
             },
             title: 'Continue',
           ),
