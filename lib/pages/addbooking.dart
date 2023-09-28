@@ -166,10 +166,49 @@ class _BookServicePageState extends State<BookServicePage> {
   }
 }
 
-class BuildStepOne extends StatelessWidget {
+class BuildStepOne extends StatefulWidget {
   const BuildStepOne({
     super.key,
   });
+
+  @override
+  State<BuildStepOne> createState() => _BuildStepOneState();
+}
+
+class _BuildStepOneState extends State<BuildStepOne> {
+  DateTime initialDate = DateTime.now();
+
+  Future<DateTime?> showDateTimePicker({
+    required BuildContext context,
+  }) async {
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: initialDate.subtract(const Duration(days: 365 * 100)),
+      lastDate: initialDate
+          .subtract(const Duration(days: 365 * 100))
+          .add(const Duration(days: 365 * 200)),
+    );
+
+    if (selectedDate == null) return null;
+
+    if (!context.mounted) return selectedDate;
+
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(selectedDate),
+    );
+
+    return selectedTime == null
+        ? selectedDate
+        : DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            selectedTime.hour,
+            selectedTime.minute,
+          );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,12 +241,14 @@ class BuildStepOne extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(23)),
                   child: TextFormField(
-                    decoration:   InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.all(12),
                       prefixIcon: GestureDetector(
-                        onTap:(){
-                          showDateTimePicker(context:context, );
+                        onTap: () {
+                          showDateTimePicker(
+                            context: context,
+                          );
                         },
                         child: const Icon(
                           Icons.calendar_month,
@@ -275,42 +316,6 @@ class BuildStepOne extends StatelessWidget {
       ],
     );
   }
-  Future<DateTime?> showDateTimePicker({
-  required BuildContext context,
-  DateTime? initialDate,
-  DateTime? firstDate,
-  DateTime? lastDate,
-}) async {
-  initialDate ??= DateTime.now();
-  firstDate ??= initialDate.subtract(const Duration(days: 365 * 100));
-  lastDate ??= firstDate.add(const Duration(days: 365 * 200));
-
-  final DateTime? selectedDate = await showDatePicker(
-    context: context,
-    initialDate: initialDate,
-    firstDate: firstDate,
-    lastDate: lastDate,
-  );
-
-  if (selectedDate == null) return null;
-
-  if (!context.mounted) return selectedDate;
-
-  final TimeOfDay? selectedTime = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.fromDateTime(selectedDate),
-  );
-
-  return selectedTime == null
-      ? selectedDate
-      : DateTime(
-          selectedDate.year,
-          selectedDate.month,
-          selectedDate.day,
-          selectedTime.hour,
-          selectedTime.minute,
-        );
-}
 }
 
 class BuildStepTwo extends StatefulWidget {
@@ -589,14 +594,12 @@ class _BuildStepTwoState extends State<BuildStepTwo> {
                                     borderRadius: BorderRadius.circular(12)),
                                 child: TextButton(
                                   onPressed: () {
-                                  
                                     var addServicetoCart = Booking(
                                         date: "date",
                                         time: "time",
                                         provider: [],
-                                        service:[serviceItem]);
+                                        service: [serviceItem]);
 
-                                    
                                     value.addToCart(addServicetoCart);
                                     buildConfirmBooking(context);
                                   },
