@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
+import 'package:serviceprovder/model/bookingmodel.dart';
 
+import '../model/servicemodel.dart';
 import '../style/style.dart';
 
 class BookingDetails extends StatelessWidget {
-  const BookingDetails({super.key});
+  final Services service;
+  final Booking cartItem;
+  const BookingDetails(
+      {super.key, required this.service, required this.cartItem});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +77,7 @@ class BookingDetails extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Apartment Cleaning',
+                        service.name,
                         style: appstyle(headingClr, FontWeight.w500, 18, ''),
                       ),
                       const SizedBox(
@@ -84,7 +90,8 @@ class BookingDetails extends StatelessWidget {
                                   appstyle(headingClr, FontWeight.w500, 14, ''),
                               children: [
                             TextSpan(
-                                text: ' 23th Oct., 2023',
+                                text: DateFormat('MMMM-dd-yyyy')
+                                    .format(cartItem.date!),
                                 style:
                                     appstyle(titleClr, FontWeight.w500, 14, ''))
                           ])),
@@ -98,13 +105,14 @@ class BookingDetails extends StatelessWidget {
                                   appstyle(headingClr, FontWeight.w500, 14, ''),
                               children: [
                             TextSpan(
-                                text: ' 04:00 PM',
+                                text:
+                                    DateFormat('HH-mm').format(cartItem.date!),
                                 style:
                                     appstyle(titleClr, FontWeight.w500, 14, ''))
                           ])),
                     ],
                   ),
-                  Image.asset('assets/images/book1.png',
+                  Image.asset(service.images,
                       fit: BoxFit.cover, height: 100, width: 100)
                 ],
               ),
@@ -270,14 +278,15 @@ class BookingDetails extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12)),
               child: Column(
                 children: [
-                  buildBookingContainer("Price", '#1200'),
+                  buildBookingContainer("Price", service.price.toString()),
                   const Divider(
                     height: 1,
                     thickness: 0.3,
                     color: Colors.grey,
                     indent: 10,
                   ),
-                  buildBookingContainer("Sub Total", '#1200*2'),
+                  buildBookingContainer(
+                      "Sub Total", service.discount.toString()),
                   const Divider(
                     height: 1,
                     thickness: 0.3,
@@ -291,7 +300,8 @@ class BookingDetails extends StatelessWidget {
                     color: Colors.grey,
                     indent: 10,
                   ),
-                  buildBookingContainer("Total Amount", '#23000'),
+                  buildBookingContainer(
+                      "Total Amount", service.totalPrice.toString()),
                 ],
               ),
             ),

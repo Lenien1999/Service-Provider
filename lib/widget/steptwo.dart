@@ -9,10 +9,10 @@ import '../style/style.dart';
 
 class BuildStepTwo extends StatefulWidget {
   final String? address;
-  final DateTime ?dateTime;
+  final DateTime? dateTime;
   final Services serviceItem;
   const BuildStepTwo(
-      {super.key, required this.serviceItem,  this.address,  this.dateTime});
+      {super.key, required this.serviceItem, this.address, this.dateTime});
 
   @override
   State<BuildStepTwo> createState() => _BuildStepTwoState();
@@ -187,8 +187,7 @@ class _BuildStepTwoState extends State<BuildStepTwo> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    buildAlertBox(context, widget.serviceItem, widget.dateTime
-                       );
+                    buildAlertBox(context, widget.serviceItem, widget.dateTime);
                   },
                   child: Container(
                     height: 50,
@@ -230,8 +229,11 @@ class _BuildStepTwoState extends State<BuildStepTwo> {
     );
   }
 
-  buildAlertBox(BuildContext context, Services serviceItem, DateTime? dateTime,
-     ) {
+  buildAlertBox(
+    BuildContext context,
+    Services serviceItem,
+    DateTime? dateTime,
+  ) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -288,6 +290,7 @@ class _BuildStepTwoState extends State<BuildStepTwo> {
                                     borderRadius: BorderRadius.circular(12)),
                                 child: TextButton(
                                   onPressed: () {
+                                    print(serviceItem.totalPrice);
                                     var addServicetoCart = Booking(
                                         date: dateTime,
                                         provider: [],
@@ -299,6 +302,9 @@ class _BuildStepTwoState extends State<BuildStepTwo> {
                                               description:
                                                   serviceItem.description,
                                               price: serviceItem.price,
+                                              discount: serviceItem.discount,
+                                              totalPrice:
+                                                  serviceItem.totalPrice,
                                               images: serviceItem.images)
                                         ]);
 

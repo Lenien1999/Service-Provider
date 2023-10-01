@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:serviceprovder/model/bookingmodel.dart';
 
@@ -96,7 +97,10 @@ class _BookingPageState extends State<BookingPage> {
                             onTap: () {
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                return const BookingDetails();
+                                return BookingDetails(
+                                  cartItem: value.cartItem[index],
+                                  service: service,
+                                );
                               }));
                             },
                             child: Container(
@@ -200,7 +204,9 @@ class _BookingPageState extends State<BookingPage> {
                                         child: Column(
                                           children: [
                                             buildBookingContainer(
-                                                "Date", '${cartitem.date}'),
+                                                "Date",
+                                                DateFormat('MMMM-dd-yyyy')
+                                                    .format(cartitem.date!)),
                                             const Divider(
                                               height: 1,
                                               thickness: 0.3,
@@ -208,7 +214,9 @@ class _BookingPageState extends State<BookingPage> {
                                               indent: 10,
                                             ),
                                             buildBookingContainer(
-                                                "Time", '2:30pm'),
+                                                "Time",
+                                                DateFormat('HH-mm')
+                                                    .format(cartitem.date!)),
                                             const Divider(
                                               height: 1,
                                               thickness: 0.3,
