@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:serviceprovder/controller/mainscreencontroller.dart';
 import 'package:serviceprovder/model/bookingmodel.dart';
+import 'package:serviceprovder/model/providermodel.dart';
 
 import '../model/servicemodel.dart';
 import '../style/dottedline.dart';
@@ -20,7 +22,9 @@ class _BookServicePageState extends State<BookServicePage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> pageList = [
-      const BuildStepOne(),
+      BuildStepOne(
+        serviceItem: widget.serviceItem,
+      ),
       BuildStepTwo(
         serviceItem: widget.serviceItem,
       )
@@ -167,8 +171,10 @@ class _BookServicePageState extends State<BookServicePage> {
 }
 
 class BuildStepOne extends StatefulWidget {
+  final Services serviceItem;
   const BuildStepOne({
     super.key,
+    required this.serviceItem,
   });
 
   @override
@@ -177,7 +183,7 @@ class BuildStepOne extends StatefulWidget {
 
 class _BuildStepOneState extends State<BuildStepOne> {
   DateTime initialDate = DateTime.now();
-
+  DateTime? selectedDateTime;
   Future<DateTime?> showDateTimePicker({
     required BuildContext context,
   }) async {
@@ -210,117 +216,164 @@ class _BuildStepOneState extends State<BuildStepOne> {
           );
   }
 
+  final addressController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Enter Detail Information',
-            style: appstyle(headingClr, FontWeight.w500, 18, '')),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: tilegClr,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Text('Date And Time :',
-                    style: appstyle(headingClr, FontWeight.w500, 14, '')),
-                const SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(23)),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.all(12),
-                      prefixIcon: GestureDetector(
-                        onTap: () {
-                          showDateTimePicker(
+    return Consumer<MainScreenController>(
+      builder: (BuildContext context, value, Widget? child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Enter Detail Information',
+                style: appstyle(headingClr, FontWeight.w500, 18, '')),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: tilegClr,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text('Date And Time :',
+                        style: appstyle(headingClr, FontWeight.w500, 14, '')),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(23)),
+                      child: TextFormField(
+                        readOnly: true,
+                        controller: TextEditingController(
+                          // Use a TextEditingController to display selectedDateTime
+                          text: selectedDateTime != null
+                              ? DateFormat('MMMM-dd-yyyy, HH:mm')
+                                  .format(selectedDateTime!)
+                              : 'Select Date and Time', // Placeholder text
+                        ),
+                        onTap: () async {
+                          final pickedDateTime = await showDateTimePicker(
                             context: context,
                           );
+                          if (pickedDateTime != null) {
+                            setState(() {
+                              selectedDateTime = pickedDateTime;
+                            });
+                          }
                         },
-                        child: const Icon(
-                          Icons.calendar_month,
-                          color: titleClr,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.all(12),
+                          prefixIcon: GestureDetector(
+                            onTap: () async {
+                              final pickedDateTime = await showDateTimePicker(
+                                context: context,
+                              );
+                              if (pickedDateTime != null) {
+                                setState(() {
+                                  selectedDateTime = pickedDateTime;
+                                });
+                              }
+                            },
+                            child: const Icon(
+                              Icons.calendar_month,
+                              color: titleClr,
+                            ),
+                          ),
+                          hintText: 'Enter Date And Time',
                         ),
                       ),
-                      hintText: 'Enter Date And Time',
                     ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text('Your Address',
-                    style: appstyle(headingClr, FontWeight.w500, 14, '')),
-                const SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(23)),
-                  child: TextFormField(
-                    maxLines: 4,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: Icon(
-                        Icons.location_on_outlined,
-                        color: titleClr,
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text('Your Address',
+                        style: appstyle(headingClr, FontWeight.w500, 14, '')),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(23)),
+                      child: TextFormField(
+                        maxLines: 4,
+                        controller: addressController,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.location_on_outlined,
+                            color: titleClr,
+                          ),
+                          hintText: 'Enter your Address',
+                        ),
                       ),
-                      hintText: 'Enter your Address',
                     ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text('Use Current Location',
-                        style: appstyle(primaryClr, FontWeight.w500, 14, '')),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text('Use Current Location',
+                            style:
+                                appstyle(primaryClr, FontWeight.w500, 14, '')),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
                   ],
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-        const SizedBox(
-          height: 35,
-        ),
-        Container(
-          height: 60,
-          decoration: BoxDecoration(
-              color: primaryClr, borderRadius: BorderRadius.circular(12)),
-          child: Center(
-              child: Text(
-            ' Next',
-            style: appstyle(Colors.white, FontWeight.bold, 16, ''),
-          )),
-        ),
-      ],
+            const SizedBox(
+              height: 35,
+            ),
+            GestureDetector(
+              onTap: () {
+                if (selectedDateTime != null &&
+                    addressController.text.isNotEmpty) {
+                  value.bookingPage = 1;
+                } else {
+                  // Show an error message if information is not filled
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Please fill in all required information.'),
+                  ));
+                }
+              },
+              child: Container(
+                height: 60,
+                decoration: BoxDecoration(
+                    color: primaryClr, borderRadius: BorderRadius.circular(12)),
+                child: Center(
+                    child: Text(
+                  ' Next',
+                  style: appstyle(Colors.white, FontWeight.bold, 16, ''),
+                )),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
 
 class BuildStepTwo extends StatefulWidget {
+  final TextEditingController? address;
+  final DateTime? dateTime;
   final Services serviceItem;
-  const BuildStepTwo({super.key, required this.serviceItem});
+  const BuildStepTwo(
+      {super.key, required this.serviceItem, this.address, this.dateTime});
 
   @override
   State<BuildStepTwo> createState() => _BuildStepTwoState();
@@ -495,7 +548,8 @@ class _BuildStepTwoState extends State<BuildStepTwo> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    buildAlertBox(context, widget.serviceItem);
+                    buildAlertBox(context, widget.serviceItem, widget.dateTime,
+                        widget.address);
                   },
                   child: Container(
                     height: 50,
@@ -537,7 +591,8 @@ class _BuildStepTwoState extends State<BuildStepTwo> {
     );
   }
 
-  buildAlertBox(BuildContext context, Services serviceItem) {
+  buildAlertBox(BuildContext context, Services serviceItem, DateTime? dateTime,
+      TextEditingController? addresscontroller) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -595,10 +650,18 @@ class _BuildStepTwoState extends State<BuildStepTwo> {
                                 child: TextButton(
                                   onPressed: () {
                                     var addServicetoCart = Booking(
-                                        date: "date",
-                                        time: "time",
+                                        date: dateTime,
                                         provider: [],
-                                        service: [serviceItem]);
+                                        service: [
+                                          Services(
+                                              location: serviceItem.location,
+                                              name: serviceItem.name,
+                                              heading: serviceItem.heading,
+                                              description:
+                                                  serviceItem.description,
+                                              price: serviceItem.price,
+                                              images: serviceItem.images)
+                                        ]);
 
                                     value.addToCart(addServicetoCart);
                                     buildConfirmBooking(context);

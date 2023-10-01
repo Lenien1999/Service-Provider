@@ -31,8 +31,9 @@ class MainScreenController extends ChangeNotifier {
   }
 
   List<Booking> cartItem = [];
-  addToCart(Booking service) {
-    cartItem.add(service);
+
+  addToCart(Booking booking) {
+    cartItem.add(booking);
     notifyListeners();
   }
 }
