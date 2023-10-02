@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:serviceprovder/controller/controller.dart';
 import 'package:serviceprovder/controller/mainscreencontroller.dart';
-import 'package:serviceprovder/pages/login_page.dart';
+
 import 'package:serviceprovder/pages/splashscreen.dart';
 
 void main() {
