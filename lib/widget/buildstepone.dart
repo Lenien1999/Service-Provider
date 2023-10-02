@@ -23,7 +23,7 @@ class BuildStepOne extends StatefulWidget {
 
 class _BuildStepOneState extends State<BuildStepOne> {
   DateTime initialDate = DateTime.now();
-  DateTime? selectedDateTime;
+  DateTime ?selectedDateTime;
   Future<DateTime?> showDateTimePicker({
     required BuildContext context,
   }) async {
@@ -110,10 +110,7 @@ class _BuildStepOneState extends State<BuildStepOne> {
                             });
                           }
                         },
-                         onChanged: (value) {
-                          // Pass the entered address to the parent widget
-                          widget.onAddressSelected(value);
-                        },
+                         
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           
@@ -153,7 +150,7 @@ class _BuildStepOneState extends State<BuildStepOne> {
                           borderRadius: BorderRadius.circular(23)),
                       child: TextFormField(
                         maxLines: 4,
-                        controller: addressController,
+                       
                           onChanged: (value) {
                           // Pass the entered address to the parent widget
                           widget.onAddressSelected(value);
