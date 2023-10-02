@@ -525,9 +525,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
       children: [
         FloatingActionButton(
           onPressed: () {
-            // showBottomSheet(context: context, builder: (__){
-            //   return 
-            // });
+            buildBottomsheet(context);
           },
           backgroundColor: primaryClr,
           child: const Icon(
@@ -551,5 +549,86 @@ class _ServiceDetailsState extends State<ServiceDetails> {
         ),
       ],
     );
+  }
+
+  void buildBottomsheet(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (__) {
+          return Center(
+            child: SizedBox(
+              height: 500,
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: AlertDialog(
+                  content: SingleChildScrollView(
+                child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/Check.png",
+                        height: 60,
+                        width: 60,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 0.4, color: primaryClr),
+                          borderRadius: BorderRadius.circular(23),
+                        ),
+                        child: TextFormField(
+                          maxLines: 2,
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              prefixIcon: const Icon(
+                                Icons.star_border,
+                                color: titleClr,
+                              ),
+                              hintText: 'Enter your Review',
+                              hintStyle:
+                                  appstyle(titleClr, FontWeight.w400, 12, '')),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 0.4, color: primaryClr),
+                          borderRadius: BorderRadius.circular(23),
+                        ),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              prefixIcon: const Icon(
+                                Icons.person,
+                                color: titleClr,
+                              ),
+                              hintText: 'Enter your Name',
+                              hintStyle:
+                                  appstyle(titleClr, FontWeight.w400, 12, '')),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      LoinRegisterButton(
+                        tap: () {
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (__) {
+                          //   return null;
+                          // }));
+                        },
+                        title: 'Review',
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                    ]),
+              )),
+            ),
+          );
+        });
   }
 }
