@@ -3,6 +3,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:serviceprovder/pages/addbooking.dart';
 import 'package:serviceprovder/style/style.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import '../model/review.dart';
 import '../model/servicemodel.dart';
 import '../widget/login_register_btn.dart';
 
@@ -15,6 +16,17 @@ class ServiceDetails extends StatefulWidget {
 }
 
 class _ServiceDetailsState extends State<ServiceDetails> {
+  TextEditingController reviewController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Dispose the controllers when the widget is disposed.
+    reviewController.dispose();
+    nameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -438,70 +450,71 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                             ],
                           ),
                         ),
-                        ListTile(
-                            contentPadding: const EdgeInsets.all(0),
-                            leading: CircleAvatar(
-                              radius: 60,
-                              child: Image.asset(
-                                'assets/images/avater1.png',
-                                height: 60,
-                                width: 60,
-                                fit: BoxFit.fill,
+                        for (Review review in widget.serviceItem.review)
+                          ListTile(
+                              contentPadding: const EdgeInsets.all(0),
+                              leading: CircleAvatar(
+                                radius: 60,
+                                child: Image.asset(
+                                  'assets/images/avater1.png',
+                                  height: 60,
+                                  width: 60,
+                                  fit: BoxFit.fill,
+                                ),
                               ),
-                            ),
-                            title: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Leslie Alexander",
-                                      style: appstyle(
-                                          headingClr, FontWeight.w600, 20, ''),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      "02 Dec",
-                                      style: appstyle(
-                                          headingClr, FontWeight.w600, 12, ''),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    RatingBar.builder(
-                                        itemCount: 5,
-                                        itemSize: 20,
-                                        initialRating: 4,
-                                        minRating: 1,
-                                        direction: Axis.horizontal,
-                                        itemBuilder: (context, index) {
-                                          return const Icon(
-                                            Icons.star,
-                                            color: Colors.yellow,
-                                          );
-                                        },
-                                        onRatingUpdate: (rating) {}),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      '4.5',
-                                      style: appstyle(
-                                          headingClr, FontWeight.w500, 16, ''),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                            subtitle: Text(
-                              "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet",
-                              style:
-                                  appstyle(headingClr, FontWeight.w500, 14, ''),
-                            ),
-                            trailing: Text(
-                              'Edit',
-                              style:
-                                  appstyle(primaryClr, FontWeight.w500, 12, ''),
-                            )),
+                              title: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        review.name,
+                                        style: appstyle(headingClr,
+                                            FontWeight.w600, 20, ''),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        "02 Dec",
+                                        style: appstyle(headingClr,
+                                            FontWeight.w600, 12, ''),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      RatingBar.builder(
+                                          itemCount: 5,
+                                          itemSize: 20,
+                                          initialRating: 4,
+                                          minRating: 1,
+                                          direction: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            return const Icon(
+                                              Icons.star,
+                                              color: Colors.yellow,
+                                            );
+                                          },
+                                          onRatingUpdate: (rating) {}),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        '4.5',
+                                        style: appstyle(headingClr,
+                                            FontWeight.w500, 16, ''),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              subtitle: Text(
+                                review.description,
+                                style: appstyle(
+                                    headingClr, FontWeight.w500, 14, ''),
+                              ),
+                              trailing: Text(
+                                'Edit',
+                                style: appstyle(
+                                    primaryClr, FontWeight.w500, 12, ''),
+                              )),
                         const SizedBox(
                           height: 150,
                         ),
@@ -525,7 +538,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
       children: [
         FloatingActionButton(
           onPressed: () {
-            buildBottomsheet(context);
+            buildBottomsheet(context, serviceItem);
           },
           backgroundColor: primaryClr,
           child: const Icon(
@@ -551,7 +564,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
     );
   }
 
-  void buildBottomsheet(BuildContext context) {
+  void buildBottomsheet(BuildContext context, Services serviceItem) {
     showDialog(
         context: context,
         builder: (__) {
@@ -578,6 +591,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                           borderRadius: BorderRadius.circular(23),
                         ),
                         child: TextFormField(
+                          controller: reviewController,
                           maxLines: 2,
                           decoration: InputDecoration(
                               border: InputBorder.none,
@@ -599,6 +613,7 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                           borderRadius: BorderRadius.circular(23),
                         ),
                         child: TextFormField(
+                          controller: nameController,
                           decoration: InputDecoration(
                               border: InputBorder.none,
                               prefixIcon: const Icon(
@@ -615,6 +630,27 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                       ),
                       LoinRegisterButton(
                         tap: () {
+                          final reviews = Review(
+                              description: reviewController.text,
+                              name: nameController.text);
+                          if (nameController.text.isNotEmpty &&
+                              reviewController.text.isNotEmpty) {
+                            widget.serviceItem.review =
+                                List.from(widget.serviceItem.review)
+                                  ..add(reviews);
+
+                            Navigator.pop(context);
+                            setState(() {});
+                            reviewController.clear();
+                            nameController.clear();
+                          } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text(
+                                  'Please fill in all required information.'),
+                            ));
+                          }
+
                           // Navigator.push(context,
                           //     MaterialPageRoute(builder: (__) {
                           //   return null;

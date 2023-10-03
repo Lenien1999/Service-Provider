@@ -2,11 +2,11 @@ class Review {
   String name;
   int review;
   String description;
-  String image;
+  String? image;
 
   Review(
       {required this.description,
-      required this.image,
+        this.image,
       required this.name,
       this.review = 0});
 }

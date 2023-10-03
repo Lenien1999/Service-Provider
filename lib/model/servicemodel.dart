@@ -3,7 +3,7 @@ import 'package:serviceprovder/model/review.dart';
 class Services {
   String name;
   String images;
-  List<Review>? review;
+  List<Review> review;
   double price;
   String description;
   String heading;
