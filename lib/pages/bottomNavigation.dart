@@ -3,6 +3,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:provider/provider.dart';
 import 'package:serviceprovder/controller/mainscreencontroller.dart';
 import 'package:serviceprovder/pages/home_page.dart';
+import 'package:serviceprovder/pages/provider/provider_home.dart';
 import 'package:serviceprovder/pages/provider/servicegrid.dart';
 
 import 'package:serviceprovder/style/style.dart';
@@ -19,7 +20,7 @@ class BuildBottomNavigation extends StatelessWidget {
     const HomePage(),
     const BookingPage(),
     const ServiceGrid(),
-    const BookingPage(),
+    const ProviderHome(),
     const ProfilePage(),
   ];
 

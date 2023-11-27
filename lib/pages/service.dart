@@ -10,9 +10,11 @@ import 'service_detail.dart';
 
 class ServicePage extends StatefulWidget {
   final Category services;
-  
-  const ServicePage(
-      {super.key, required this.services,});
+
+  const ServicePage({
+    super.key,
+    required this.services,
+  });
 
   @override
   State<ServicePage> createState() => _ServicePageState();
@@ -26,7 +28,7 @@ class _ServicePageState extends State<ServicePage> {
     'Car Painting'
   ];
   final controller = TextEditingController();
-    List<Services> searchServiceList = List.from(serviceList);
+  List<Services> searchServiceList = List.from(serviceList);
   void updatSearchList(String value) {
     setState(() {
       searchServiceList.where((element) {
@@ -37,6 +39,7 @@ class _ServicePageState extends State<ServicePage> {
       }).toList();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final String category = widget.services.name;
@@ -85,20 +88,23 @@ class _ServicePageState extends State<ServicePage> {
                       prefixIcon: Icon(Icons.search)),
                 ),
               ),
-              Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                    color: primaryClr, borderRadius: BorderRadius.circular(10)),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (__) {
-                      return const FilterPage();
-                    }));
-                  },
-                  child: const Icon(
-                    Ionicons.filter_sharp,
-                    color: Colors.white,
+              Expanded(
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  decoration: BoxDecoration(
+                      color: primaryClr,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (__) {
+                        return const FilterPage();
+                      }));
+                    },
+                    child: const Icon(
+                      Ionicons.filter_sharp,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               )
@@ -161,8 +167,7 @@ class _ServicePageState extends State<ServicePage> {
                           onTap: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              return ServiceDetails(
-                                serviceItem: serviceItem);
+                              return ServiceDetails(serviceItem: serviceItem);
                             }));
                           },
                           child: Stack(
@@ -285,6 +290,4 @@ class _ServicePageState extends State<ServicePage> {
       ),
     );
   }
-
-
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:serviceprovder/pages/addbooking.dart';
 import 'package:serviceprovder/style/style.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../model/review.dart';
 import '../model/servicemodel.dart';
 import '../widget/login_register_btn.dart';
+import '../widget/service_review.dart';
 
 class ServiceDetails extends StatefulWidget {
   final Services serviceItem;
@@ -440,7 +442,14 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                                     Colors.black, FontWeight.w500, 18, ''),
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (__) {
+                                    return ServiceReviewList(
+                                        review: widget.serviceItem.review,
+                                        service: widget.serviceItem);
+                                  }));
+                                },
                                 child: Text(
                                   "View all",
                                   style: appstyle(
@@ -450,71 +459,128 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                             ],
                           ),
                         ),
-                        for (Review review in widget.serviceItem.review)
-                          ListTile(
-                              contentPadding: const EdgeInsets.all(0),
-                              leading: CircleAvatar(
-                                radius: 60,
-                                child: Image.asset(
-                                  'assets/images/avater1.png',
-                                  height: 60,
-                                  width: 60,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              title: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        review.name,
-                                        style: appstyle(headingClr,
-                                            FontWeight.w600, 20, ''),
+                        SizedBox(
+                          height: 150,
+                          child: ListView.builder(
+                              itemCount:
+                                  widget.serviceItem.review.length.clamp(1, 3),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                if (index < widget.serviceItem.review.length) {
+                                  final reviews =
+                                      widget.serviceItem.review[index];
+                                  return 
+                                  
+                                  ListTile(
+                                      contentPadding: const EdgeInsets.all(0),
+                                      leading: CircleAvatar(
+                                        radius: 60,
+                                        child: Image.asset(
+                                          'assets/images/avater1.png',
+                                          height: 60,
+                                          width: 60,
+                                          fit: BoxFit.fill,
+                                        ),
                                       ),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        "02 Dec",
-                                        style: appstyle(headingClr,
-                                            FontWeight.w600, 12, ''),
+                                      title: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                reviews.name,
+                                                style: appstyle(headingClr,
+                                                    FontWeight.w600, 20, ''),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                DateFormat.MMMd()
+                                                    .format(reviews.time),
+                                                style: appstyle(headingClr,
+                                                    FontWeight.w600, 12, ''),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              RatingBar.builder(
+                                                  itemCount: 5,
+                                                  itemSize: 20,
+                                                  initialRating: 4,
+                                                  minRating: 1,
+                                                  direction: Axis.horizontal,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return const Icon(
+                                                      Icons.star,
+                                                      color: Colors.yellow,
+                                                    );
+                                                  },
+                                                  onRatingUpdate: (rating) {}),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                '4.5',
+                                                style: appstyle(headingClr,
+                                                    FontWeight.w500, 16, ''),
+                                              )
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      RatingBar.builder(
-                                          itemCount: 5,
-                                          itemSize: 20,
-                                          initialRating: 4,
-                                          minRating: 1,
-                                          direction: Axis.horizontal,
-                                          itemBuilder: (context, index) {
-                                            return const Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                            );
-                                          },
-                                          onRatingUpdate: (rating) {}),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        '4.5',
+                                      subtitle: Text(
+                                        reviews.description,
                                         style: appstyle(headingClr,
-                                            FontWeight.w500, 16, ''),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              subtitle: Text(
-                                review.description,
-                                style: appstyle(
-                                    headingClr, FontWeight.w500, 14, ''),
-                              ),
-                              trailing: Text(
-                                'Edit',
-                                style: appstyle(
-                                    primaryClr, FontWeight.w500, 12, ''),
-                              )),
+                                            FontWeight.w500, 14, ''),
+                                      ),
+                                      trailing: GestureDetector(
+                                        onTap: () {
+                                          buildBottomsheetedit(context,
+                                              widget.serviceItem, reviews);
+                                        },
+                                        child: Text(
+                                          'Edit',
+                                          style: appstyle(primaryClr,
+                                              FontWeight.w500, 12, ''),
+                                        ),
+                                      ));
+                                } else {
+                                  return Container(
+                                    height: 130,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            color: const Color.fromARGB(
+                                                255, 236, 234, 234),
+                                            width: 0.3)),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'No review yet',
+                                          style: appstyle(primaryClr,
+                                              FontWeight.bold, 18, ''),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: List.generate(
+                                              3,
+                                              (index) => const Icon(
+                                                    Icons.star_border,
+                                                    color: primaryClr,
+                                                    size: 60,
+                                                  )),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                              }),
+                        ),
                         const SizedBox(
                           height: 150,
                         ),
@@ -568,6 +634,8 @@ class _ServiceDetailsState extends State<ServiceDetails> {
     showDialog(
         context: context,
         builder: (__) {
+          final currentDate = DateTime.now();
+
           return Center(
             child: SizedBox(
               height: 500,
@@ -632,7 +700,8 @@ class _ServiceDetailsState extends State<ServiceDetails> {
                         tap: () {
                           final reviews = Review(
                               description: reviewController.text,
-                              name: nameController.text);
+                              name: nameController.text,
+                              time: currentDate);
                           if (nameController.text.isNotEmpty &&
                               reviewController.text.isNotEmpty) {
                             widget.serviceItem.review =
@@ -666,5 +735,121 @@ class _ServiceDetailsState extends State<ServiceDetails> {
             ),
           );
         });
+  }
+
+  void buildBottomsheetedit(
+      BuildContext context, Services serviceItem, Review reviewToEdit) {
+    final reviewEditController =
+        TextEditingController(text: reviewToEdit.description);
+    final nameEditController = TextEditingController(text: reviewToEdit.name);
+
+    showDialog(
+      context: context,
+      builder: (__) {
+        final currentDate = DateTime.now();
+
+        return Center(
+          child: SizedBox(
+            height: 500,
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: AlertDialog(
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/images/Check.png",
+                      height: 60,
+                      width: 60,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 0.4, color: primaryClr),
+                        borderRadius: BorderRadius.circular(23),
+                      ),
+                      child: TextFormField(
+                        controller: reviewEditController,
+                        maxLines: 2,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: const Icon(
+                            Icons.star_border,
+                            color: titleClr,
+                          ),
+                          hintText: 'Edit your Review',
+                          hintStyle:
+                              appstyle(titleClr, FontWeight.w400, 12, ''),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 0.4, color: primaryClr),
+                        borderRadius: BorderRadius.circular(23),
+                      ),
+                      child: TextFormField(
+                        controller: nameEditController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: const Icon(
+                            Icons.person,
+                            color: titleClr,
+                          ),
+                          hintText: 'Edit your Name',
+                          hintStyle:
+                              appstyle(titleClr, FontWeight.w400, 12, ''),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    LoinRegisterButton(
+                      tap: () {
+                        final updatedReview = Review(
+                          description: reviewEditController.text,
+                          name: nameEditController.text,
+                          time: currentDate,
+                        );
+
+                        if (nameEditController.text.isNotEmpty &&
+                            reviewEditController.text.isNotEmpty) {
+                          setState(() {
+                            final index =
+                                widget.serviceItem.review.indexOf(reviewToEdit);
+                            if (index != -1) {
+                              widget.serviceItem.review[index] = updatedReview;
+                            }
+                          });
+                          Navigator.pop(context);
+                          reviewEditController.clear();
+                          nameEditController.clear();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Please fill in all required information.'),
+                            ),
+                          );
+                        }
+                      },
+                      title: 'Save Changes',
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

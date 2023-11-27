@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:serviceprovder/model/servicemodel.dart';
 
 import '../model/bookingmodel.dart';
- 
+import '../model/review.dart';
 
 class MainScreenController extends ChangeNotifier {
+  List<Services> _services = [];
+  List<Services> get services => _services;
+
+  List<Review> _reviews = [];
+  List<Review> get reviews => _reviews;
+
   int _pageIndex = 0;
   int get pageIndex => _pageIndex;
 
@@ -38,9 +44,14 @@ class MainScreenController extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Services> reviewList = [];
-  addReview(Services addreview) {
-    reviewList.add(addreview);
+  // Add a service to the list
+  void addService(Services service) {
+    _services.add(service);
+    notifyListeners();
+  }
+
+  void addReviewToService(Review review, Services service) {
+    service.review.add(review);
     notifyListeners();
   }
 }

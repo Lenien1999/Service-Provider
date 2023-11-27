@@ -86,7 +86,7 @@ class BuildSlider extends StatelessWidget {
                           backgroundColor: currentpage != index
                               ? const Color.fromRGBO(175, 176, 219, 1)
                               : const Color.fromRGBO(95, 96, 185, 1),
-                        ),
+                        ),  
                       ),
                     ),
                   ],
