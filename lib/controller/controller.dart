@@ -8,4 +8,9 @@ class PageNotifier extends ChangeNotifier {
     _currentPage = page;
     notifyListeners();
   }
+
+    void updatePage(int page) {
+    _currentPage = page;
+    notifyListeners();
+  }
 }

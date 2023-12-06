@@ -17,40 +17,41 @@ class _LoginPageState extends State<LoginPage> {
   bool value = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Hello Sara!",
-              style: appstyle(
-                  const Color.fromRGBO(
-                    28,
-                    31,
-                    52,
-                    1,
-                  ),
-                  FontWeight.w500,
-                  22,
-                  'assets/fonts/WorkSans-Regular.ttf'),
-            ),
-            Text(
-              "Welcome Back, you have been\n missed for long Time",
-              textAlign: TextAlign.center,
-              style: appstyle(const Color.fromRGBO(108, 117, 125, 1),
-                  FontWeight.w500, 16, 'assets/fonts/WorkSans-Medium.ttf'),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: SingleChildScrollView(
-                child: Form(
-                    child: Column(
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: SingleChildScrollView(
+              child: Form(
+                child: Column(
                   children: [
+                    Text(
+                      "Hello Sara!",
+                      style: appstyle(
+                          const Color.fromRGBO(
+                            28,
+                            31,
+                            52,
+                            1,
+                          ),
+                          FontWeight.w500,
+                          22,
+                          'assets/fonts/WorkSans-Regular.ttf'),
+                    ),
+                    Text(
+                      "Welcome Back, you have been\n missed for long Time",
+                      textAlign: TextAlign.center,
+                      style: appstyle(
+                          const Color.fromRGBO(108, 117, 125, 1),
+                          FontWeight.w500,
+                          16,
+                          'assets/fonts/WorkSans-Medium.ttf'),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     const BuildTextField(
                       hint: 'Email Address',
                       icon: Icons.email,
@@ -85,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                         Text(
-                          'Forgot Password?',
+                          'Forget Password?',
                           style: appstyle(
                               const Color.fromRGBO(95, 96, 185, 1),
                               FontWeight.w500,
@@ -93,99 +94,105 @@ class _LoginPageState extends State<LoginPage> {
                               'assets/fonts/WorkSans-Regular.ttf'),
                         )
                       ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    LoinRegisterButton(
+                      tap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (__) {
+                          return BuildBottomNavigation();
+                        }));
+                      },
+                      title: "Login",
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    RichText(
+                        text: TextSpan(
+                            text: "Don't have an account?",
+                            style: appstyle(Colors.grey, FontWeight.w500, 14,
+                                'assets/fonts/WorkSans-Regular.ttf'),
+                            children: [
+                          WidgetSpan(
+                              child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (__) {
+                                return const RegisterPage();
+                              }));
+                            },
+                            child: const Text(' Sign Up',
+                                style: TextStyle(
+                                    color: primaryClr,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    fontStyle: FontStyle.italic)),
+                          ))
+                        ])),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        const SizedBox(
+                          width: 130,
+                          child: Divider(
+                            thickness: 2,
+                            color: Color.fromRGBO(235, 235, 235, 1),
+                          ),
+                        ),
+                        Text(
+                          "Or Continue with",
+                          style: appstyle(
+                              const Color.fromRGBO(108, 117, 125, 1),
+                              FontWeight.w500,
+                              14,
+                              'assets/fonts/WorkSans-Regular.ttf'),
+                        ),
+                        const SizedBox(
+                          width: 130,
+                          child: Divider(
+                            thickness: 2,
+                            color: Color.fromRGBO(235, 235, 235, 1),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const CircleAvatar(
+                          backgroundColor: Color.fromRGBO(246, 247, 249, 1),
+                          radius: 30,
+                          child: Icon(
+                            Icons.email_rounded,
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        CircleAvatar(
+                            backgroundColor:
+                                const Color.fromRGBO(246, 247, 249, 1),
+                            radius: 30,
+                            child: Image.asset(
+                              'assets/images/Calling.png',
+                            ))
+                      ],
                     )
                   ],
-                )),
+                ),
               ),
             ),
-            const SizedBox(
-              height: 40,
-            ),
-            LoinRegisterButton(
-              tap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (__) {
-                  return BuildBottomNavigation();
-                }));
-              },
-              title: "Login",
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            RichText(
-                text: TextSpan(
-                    text: "Don't have an account?",
-                    style: appstyle(Colors.grey, FontWeight.w500, 14,
-                        'assets/fonts/WorkSans-Regular.ttf'),
-                    children: [
-                  WidgetSpan(
-                      child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (__) {
-                        return const RegisterPage();
-                      }));
-                    },
-                    child: const Text(' Sign Up',
-                        style: TextStyle(
-                            color: primaryClr,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic)),
-                  ))
-                ])),
-            const SizedBox(
-              height: 70,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                const SizedBox(
-                  width: 130,
-                  child: Divider(
-                    thickness: 2,
-                    color: Color.fromRGBO(235, 235, 235, 1),
-                  ),
-                ),
-                Text(
-                  "Or Continue with",
-                  style: appstyle(const Color.fromRGBO(108, 117, 125, 1),
-                      FontWeight.w500, 14, 'assets/fonts/WorkSans-Regular.ttf'),
-                ),
-                const SizedBox(
-                  width: 130,
-                  child: Divider(
-                    thickness: 2,
-                    color: Color.fromRGBO(235, 235, 235, 1),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CircleAvatar(
-                  backgroundColor: Color.fromRGBO(246, 247, 249, 1),
-                  radius: 35,
-                  child: Icon(
-                    Icons.email_rounded,
-                    color: Colors.redAccent,
-                  ),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                CircleAvatar(
-                    backgroundColor: const Color.fromRGBO(246, 247, 249, 1),
-                    radius: 35,
-                    child: Image.asset(
-                      'assets/images/Calling.png',
-                    ))
-              ],
-            )
-          ],
+          ),
         ),
       ),
     );

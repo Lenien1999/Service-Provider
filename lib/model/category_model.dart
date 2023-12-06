@@ -12,17 +12,13 @@ List<Category> categoryList = [
       image: "assets/images/Icon1.png",
       name: 'Hair Dressing',
       service: serviceList),
-  Category(
-      image: "assets/images/Icon3.png", name: 'Salon', service: serviceList),
+  
   // Category(image: "assets/images/Icon4.png", name: 'Security'),
   Category(
       image: "assets/images/Icon5.png",
       name: 'Smart Home',
       service: serviceList),
-  Category(
-      image: "assets/images/Icon6.png",
-      name: 'Pes;t Control',
-      service: serviceList),
+  
   Category(
       image: "assets/images/Icon7.png", name: 'Painting', service: serviceList),
   Category(

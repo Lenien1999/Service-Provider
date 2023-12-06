@@ -5,10 +5,10 @@ import '../model/bookingmodel.dart';
 import '../model/review.dart';
 
 class MainScreenController extends ChangeNotifier {
-  List<Services> _services = [];
+  final List<Services> _services = [];
   List<Services> get services => _services;
 
-  List<Review> _reviews = [];
+  final List<Review> _reviews = [];
   List<Review> get reviews => _reviews;
 
   int _pageIndex = 0;

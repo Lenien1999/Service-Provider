@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:serviceprovder/controller/controller.dart';
 import 'package:serviceprovder/controller/mainscreencontroller.dart';
+import 'package:serviceprovder/firebaseController/firbaseAuth/auth_controller.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import 'package:serviceprovder/pages/splashscreen.dart';
 
-void main() {
+Future <void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) {
@@ -13,6 +20,9 @@ void main() {
       }),
       ChangeNotifierProvider(create: (context) {
         return PageNotifier();
+      }),
+      ChangeNotifierProvider(create: (context) {
+        return AuthProvider();
       })
     ],
     child: const MyApp(),

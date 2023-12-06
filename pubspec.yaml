@@ -45,6 +45,12 @@ dependencies:
   flutter_slidable: 
   flutter_screenutil: ^5.9.0
   intl: ^0.18.1
+  cloud_firestore:
+  firebase_storage:
+  firebase_core:
+  firebase_auth:
+  image_picker:
+  dotted_border: ^2.1.0
 
 dev_dependencies:
   flutter_test:
