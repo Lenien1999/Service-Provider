@@ -5,36 +5,23 @@ import 'package:serviceprovder/pages/splashscreen.dart';
 
 import 'authexception.dart';
 
-class AuthProvider with ChangeNotifier {
+class AuthController with ChangeNotifier {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   late User? _fireBaseUser;
 
   User? get fireBaseUser => _fireBaseUser;
 
-  Future<void> initializeUser(BuildContext context) async {
-    _fireBaseUser = _auth.currentUser;
+  AuthController() {
     _auth.authStateChanges().listen((user) {
       _fireBaseUser = user;
       notifyListeners();
     });
-    setInitialScreen(context);
   }
 
-  void setInitialScreen(BuildContext context) {
-    if (_fireBaseUser == null) {
-      // If user is not logged in, navigate to LoginScreen
-      Navigator.push(context, MaterialPageRoute(builder: (__) {
-        return const SplashScreen();
-      }));
-    } else {
-      // If user is logged in, navigate to BottomNavigation
-      Navigator.push(context, MaterialPageRoute(builder: (__) {
-        return BuildBottomNavigation();
-      }));
-    }
-  }
-
-  // Other methods like registerUser, signInUser, resetPassword, and logout remain the same
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   Future<void> registerUser(
       {required String email,
@@ -46,48 +33,47 @@ class AuthProvider with ChangeNotifier {
         password: password,
       );
       if (_fireBaseUser != null) {
-        // ignore: use_build_context_synchronously
-        Navigator.push(context, MaterialPageRoute(builder: (__) {
-          return BuildBottomNavigation();
-        }));
+        navigatorKey.currentState?.pushReplacement(
+          MaterialPageRoute(
+              builder: (context) => const BuildBottomNavigation()),
+        );
       } else {
-        // ignore: use_build_context_synchronously
-        Navigator.push(context, MaterialPageRoute(builder: (__) {
-          return const SplashScreen();
-        }));
+        navigatorKey.currentState?.pushReplacement(
+            MaterialPageRoute(builder: (context) => const SplashScreen()));
       }
     } on FirebaseAuthException catch (e) {
-      // Handle authentication exceptions
+      final error = SignandLoginFailure.code(e.code);
+      // ignore: use_build_context_synchronously
+      _showErrorSnackbar(context, error.failure, Colors.red);
     } catch (_) {
-      // Handle other exceptions
+      const error = SignandLoginFailure();
+      // ignore: use_build_context_synchronously
+      _showSuccessSnackbar(context, error.failure, Colors.green);
     }
     notifyListeners();
   }
 
-  Future<void> signInUser({
-    required String email,
-    required String password,
-    required BuildContext context
-  }) async {
+  Future<void> signInUser(
+      {required String email,
+      required String password,
+      required BuildContext context}) async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      navigatorKey.currentState?.pushReplacement(MaterialPageRoute(
+          builder: (context) => const BuildBottomNavigation()));
     } on FirebaseAuthException catch (e) {
-    final error = SignandLoginFailure.code(e.code);
-    // ignore: use_build_context_synchronously
-    _showErrorSnackbar(context, error.failure, Colors.red);
-  } catch (_) {
-    const error = SignandLoginFailure();
-    // ignore: use_build_context_synchronously
-    _showSuccessSnackbar(context, error.failure, Colors.green);
-  }
-  notifyListeners();
-  }
-
-  Future<void> resetPassword(String email, BuildContext context) async {
-    // Reset password functionality
+      final error = SignandLoginFailure.code(e.code);
+      // ignore: use_build_context_synchronously
+      _showErrorSnackbar(context, error.failure, Colors.red);
+    } catch (_) {
+      const error = SignandLoginFailure();
+      // ignore: use_build_context_synchronously
+      _showSuccessSnackbar(context, error.failure, Colors.green);
+    }
+    notifyListeners();
   }
 
   Future<void> logout() async {

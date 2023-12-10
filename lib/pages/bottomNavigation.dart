@@ -8,21 +8,57 @@ import 'package:serviceprovder/pages/provider/servicegrid.dart';
 
 import 'package:serviceprovder/style/style.dart';
 
+import '../backend/firebase_method.dart';
+import '../firebaseController/firbaseAuth/auth_controller.dart';
+import '../firebaseController/firbaseAuth/auth_model.dart';
 import 'book_page.dart';
 
 import 'profile.dart';
 
-// ignore: must_be_immutable
-class BuildBottomNavigation extends StatelessWidget {
-  BuildBottomNavigation({super.key});
+class BuildBottomNavigation extends StatefulWidget {
+  const BuildBottomNavigation({super.key});
 
-  List<Widget> pageList = [
+  @override
+  State<BuildBottomNavigation> createState() => _BuildBottomNavigationState();
+}
+
+class _BuildBottomNavigationState extends State<BuildBottomNavigation> {
+  List<Widget> customerPages = [
     const HomePage(),
     const BookingPage(),
     const ServiceGrid(),
-    const ProviderHome(),
     const ProfilePage(),
   ];
+
+  List<Widget> providerPages = [
+    const ProviderHome(),
+    const BookingPage(), // Common booking page for providers
+    const ServiceGrid(),
+    const ProfilePage(),
+  ];
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUser();
+  }
+
+  UserModel? _userData;
+  Future<void> _getCurrentUser() async {
+    final userController = Provider.of<AuthController>(context, listen: false);
+    await _fetchUserData(userController.fireBaseUser!.uid);
+  }
+
+  Future<void> _fetchUserData(String userId) async {
+    try {
+      FirebaseMethod firebaseMethod = FirebaseMethod();
+      UserModel? userData = await firebaseMethod.getUserData(userId);
+      setState(() {
+        _userData = userData;
+      });
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,27 +110,30 @@ class BuildBottomNavigation extends StatelessWidget {
                 ),
                 BottomNavWidget(
                   icon: mainscreenController.pageIndex == 3
-                      ? Icons.email
-                      : Icons.email_outlined,
-                  tap: () {
-                    mainscreenController.pageIndex = 3;
-                  },
-                ),
-                BottomNavWidget(
-                  icon: mainscreenController.pageIndex == 4
                       ? Ionicons.person
                       : Ionicons.person_outline,
                   tap: () {
-                    mainscreenController.pageIndex = 4;
+                    mainscreenController.pageIndex = 3;
                   },
                 ),
               ],
             ),
           )),
-          body: pageList[mainscreenController.pageIndex],
+          body: _buildSelectedPage(
+            mainscreenController.pageIndex,
+            context,
+          ),
         );
       },
     );
+  }
+
+  Widget _buildSelectedPage(int pageIndex, BuildContext context) {
+    if (_userData?.role == 'provider') {
+      return providerPages[pageIndex];
+    } else {
+      return customerPages[pageIndex];
+    }
   }
 }
 

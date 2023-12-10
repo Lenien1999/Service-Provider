@@ -71,7 +71,8 @@ class _ServiceGridState extends State<ServiceGrid> {
                         return ServiceDetails(serviceItem: serviceItem);
                       }));
                     },
-                    child: Container(
+                    child:
+                     Container(
                       margin: const EdgeInsets.only(left: 15, right: 15),
                       decoration: BoxDecoration(
                           boxShadow: const [

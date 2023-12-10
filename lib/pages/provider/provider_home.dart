@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../provider_controller/addservice.dart';
 import '../../style/style.dart';
 
 class ProviderHome extends StatelessWidget {
@@ -8,6 +9,18 @@ class ProviderHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: primaryClr,
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return const AddServices();
+          }));
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: primaryClr,
         actions: [
@@ -97,18 +110,35 @@ class ProviderHome extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                buildProviderInfo(
-                    '90', ' Total Booking', Icons.my_library_books_outlined),
-                buildProviderInfo(
-                    '15', ' Total Service', Icons.design_services_sharp),
+                Expanded(
+                  child: buildProviderInfo(
+                      '90', ' Total Booking', Icons.my_library_books_outlined),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  child: buildProviderInfo(
+                      '15', ' Total Service', Icons.design_services_sharp),
+                ),
               ],
+            ),
+            const SizedBox(
+              height: 15,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                buildProviderInfo('30', ' HouseMan', Icons.person_2_outlined),
-                buildProviderInfo(
-                    '\$15', ' Total Earning', Icons.design_services_sharp),
+                Expanded(
+                    child: buildProviderInfo(
+                        '30', ' HouseMan', Icons.person_2_outlined)),
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  child: buildProviderInfo(
+                      '\$15', ' Total Earning', Icons.design_services_sharp),
+                ),
               ],
             ),
             const SizedBox(
@@ -135,7 +165,7 @@ class ProviderHome extends StatelessWidget {
               child: GridView.builder(
                   itemCount: 4,
                   shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 15,
@@ -150,15 +180,17 @@ class ProviderHome extends StatelessWidget {
                             width: 2,
                           )),
                       child: Column(children: [
-                        Container(
-                          height: 110,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(12),
-                                  topLeft: Radius.circular(12))),
-                          child: Image.asset('assets/images/houseman.png',
-                              height: 110, fit: BoxFit.fitHeight),
+                        Expanded(
+                          child: Container(
+                            height: 110,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(12),
+                                    topLeft: Radius.circular(12))),
+                            child: Image.asset('assets/images/houseman.png',
+                                height: 110, fit: BoxFit.fitHeight),
+                          ),
                         ),
                         const SizedBox(
                           height: 10,
@@ -215,16 +247,15 @@ class ProviderHome extends StatelessWidget {
           width: 1,
         ),
       ),
-      width: 220,
       child: ListTile(
         contentPadding: const EdgeInsets.all(8),
         title: Text(
           amount,
-          style: appstyle(primaryClr, FontWeight.bold, 22, ''),
+          style: appstyle(primaryClr, FontWeight.bold, 18, ''),
         ),
         subtitle: Text(
           title,
-          style: appstyle(titleClr, FontWeight.w500, 14, ''),
+          style: appstyle(titleClr, FontWeight.w500, 12, ''),
         ),
         trailing: Padding(
           padding: const EdgeInsets.all(12.0),

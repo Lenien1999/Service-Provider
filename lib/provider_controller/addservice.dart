@@ -40,6 +40,10 @@ class _AddServicesState extends State<AddServices> {
     });
   }
 
+  final location = TextEditingController();
+  final description = TextEditingController();
+  final price = TextEditingController();
+  final name = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,16 +109,35 @@ class _AddServicesState extends State<AddServices> {
                 const SizedBox(
                   height: 15,
                 ),
-                const BuildTextField(
-                    hint: 'Service Name',
-                    icon: Icons.production_quantity_limits_rounded),
+                BuildTextField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter service Name';
+                    } else {
+                      return null;
+                    }
+                  },
+                  hint: 'Service Name',
+                  icon: Icons.production_quantity_limits_rounded,
+                  controller: name,
+                ),
                 const SizedBox(
                   height: 15,
                 ),
                 Row(children: [
-                  const Expanded(
+                  Expanded(
                     child: BuildTextField(
-                        hint: 'Price ', icon: Icons.price_change_rounded),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the price';
+                        } else {
+                          return null;
+                        }
+                      },
+                      hint: 'Price ',
+                      icon: Icons.price_change_rounded,
+                      controller: price,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -171,14 +194,32 @@ class _AddServicesState extends State<AddServices> {
                 const SizedBox(
                   height: 15,
                 ),
-                const BuildTextField(
-                    hint: 'Location ', icon: Icons.edit_location_sharp),
+                BuildTextField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the location';
+                    } else {
+                      return null;
+                    }
+                  },
+                  hint: 'Location ',
+                  icon: Icons.edit_location_sharp,
+                  controller: location,
+                ),
                 const SizedBox(
                   height: 15,
                 ),
-                const BuildTextField(
+                BuildTextField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the description';
+                    } else {
+                      return null;
+                    }
+                  },
                   maxline: 5,
                   hint: 'Description ',
+                  controller: description,
                 ),
                 const SizedBox(
                   height: 15,

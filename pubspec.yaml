@@ -51,6 +51,7 @@ dependencies:
   firebase_auth:
   image_picker:
   dotted_border: ^2.1.0
+  fluttertoast:
 
 dev_dependencies:
   flutter_test:

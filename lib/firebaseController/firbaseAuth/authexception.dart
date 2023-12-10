@@ -1,3 +1,5 @@
+import 'package:serviceprovder/component/utilitiy.dart';
+
 class SignandLoginFailure {
   final String failure;
 
@@ -26,7 +28,7 @@ class SignandLoginFailure {
         errorMessage = "An unknown error has occurred.";
         break;
     }
-
+    Utils().onError(errorMessage);
     return SignandLoginFailure(errorMessage);
   }
 }

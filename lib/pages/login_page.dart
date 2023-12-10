@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:serviceprovder/pages/register_page.dart';
 import 'package:serviceprovder/style/style.dart';
 import 'package:serviceprovder/widget/build_textfield.dart';
 
+import '../firebaseController/firbaseAuth/auth_controller.dart';
 import '../widget/login_register_btn.dart';
-import 'bottomNavigation.dart';
+ 
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,9 +16,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final email = TextEditingController();
+  final password = TextEditingController();
   bool value = false;
   @override
   Widget build(BuildContext context) {
+    final authController = Provider.of<AuthController>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -52,16 +57,40 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    const BuildTextField(
+                    BuildTextField(
                       hint: 'Email Address',
                       icon: Icons.email,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an email';
+                        }
+                        // Use RegExp for basic email validation
+                        if (!RegExp(
+                                r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b')
+                            .hasMatch(value)) {
+                          return 'Enter a valid email';
+                        }
+
+                        return null; // Return null if the input is valid
+                      },
+                      controller: email,
                     ),
                     const SizedBox(
                       height: 24,
                     ),
-                    const BuildTextField(
+                    BuildTextField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter an Full Name';
+                        } else if (value.length < 6) {
+                          return 'Password lenght should greater than 6';
+                        } else {
+                          return null;
+                        }
+                      },
                       hint: 'Password',
                       icon: Icons.visibility_off,
+                      controller: password,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,11 +128,11 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20,
                     ),
                     LoinRegisterButton(
-                      tap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (__) {
-                          return BuildBottomNavigation();
-                        }));
+                      tap: () async {
+                        await authController.signInUser(
+                            email: email.text.trim(),
+                            password: password.text.trim(),
+                            context: context);
                       },
                       title: "Login",
                     ),

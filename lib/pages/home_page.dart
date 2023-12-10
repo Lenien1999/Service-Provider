@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:serviceprovder/component/provider_controller/addservice.dart';
+ 
 import 'package:serviceprovder/controller/controller.dart';
 import 'package:serviceprovder/model/servicemodel.dart';
 import 'package:serviceprovder/pages/service_detail.dart';
@@ -65,18 +65,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: primaryClr,
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return const AddServices();
-          }));
-        },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+    
       backgroundColor: const Color(0x00f6f7f9),
       body: Consumer<PageNotifier>(builder: (context, homecontroller, child) {
         return CustomScrollView(
